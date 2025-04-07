@@ -1,6 +1,6 @@
 import { Model } from "./Model";
 
-export class Account extends Model {
+export class ModelAccount extends Model {
     readonly id: number;
     name: string;
     balance: number;
@@ -12,13 +12,13 @@ export class Account extends Model {
         this.balance = balance / 100;
     }
 
-    static getById(id: number): Account {
-        const res = Account.sqlite.exec(`
+    static getById(id: number): ModelAccount {
+        const res = ModelAccount.sqlite.exec(`
             SELECT * 
             FROM Account 
             WHERE id = ${id}`
         );
-        return new Account(
+        return new ModelAccount(
             res[0].values[0][0] as number,
             res[0].values[0][1] as string,
             res[0].values[0][2] as number,
@@ -26,7 +26,7 @@ export class Account extends Model {
     }
 
     save(): void {
-        Account.sqlite.exec(`
+        ModelAccount.sqlite.exec(`
             UPDATE Account SET 
             name = "${this.name}", 
             balance = ${Math.trunc(this.balance * 100)} 
@@ -35,7 +35,7 @@ export class Account extends Model {
     }
 
     delete(): void {
-        Account.sqlite.exec(`
+        ModelAccount.sqlite.exec(`
             DELETE FROM Account 
             WHERE id = ${this.id}`
         );

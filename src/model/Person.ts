@@ -1,6 +1,6 @@
 import { Model } from "./Model";
 
-export class Person extends Model {
+export class ModelPerson extends Model {
     readonly id: number;
     name: string;
     debit: number;
@@ -16,13 +16,13 @@ export class Person extends Model {
         this.remission = remission / 100;
     }
 
-    static getById(id: number): Person {
-        const res = Person.sqlite.exec(`
+    static getById(id: number): ModelPerson {
+        const res = ModelPerson.sqlite.exec(`
             SELECT * 
             FROM Person 
             WHERE id = ${id}`
         );
-        return new Person(
+        return new ModelPerson(
             res[0].values[0][0] as number,
             res[0].values[0][1] as string,
             res[0].values[0][2] as number,
@@ -32,7 +32,7 @@ export class Person extends Model {
     }
 
     save(): void {
-        Person.sqlite.exec(`
+        ModelPerson.sqlite.exec(`
             UPDATE Person SET 
             name = "${this.name}", 
             debit = ${Math.trunc(this.debit * 100)}, 
@@ -43,7 +43,7 @@ export class Person extends Model {
     }
 
     delete(): void {
-        Person.sqlite.exec(`
+        ModelPerson.sqlite.exec(`
             DELETE FROM Person 
             WHERE id = ${this.id}`
         );
