@@ -35,13 +35,17 @@ class FinancialTrackerModal extends SuggestModal<{ text: string, value: any }> {
 export async function createModal(title: string, entries: {text: string, value: any}[]): Promise<any> {
     return new Promise(async (resolve) => {
         const modal = new FinancialTrackerModal(title, entries);
-        modal.open();
-        modal.onChooseSuggestion = (item, evt) => {
+        let selected = false;
+        modal.onChooseSuggestion = (item) => {
+            selected = true;
             resolve(item.value);
-            modal.close();
         };
         modal.onClose = () => {
-            resolve(null);
-        };
+            setTimeout(() => {
+                if (selected) return;
+                resolve(`exit`);
+            }, 25);
+        }
+        modal.open();
     });
 }

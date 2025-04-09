@@ -1,7 +1,7 @@
 import { createModal } from "src/module/Modal";
 
 export async function viewDashboard(account_balance: number, transactions_total: number) {
-    return await createModal(`💎 Financial Tracker`, [
+    return createModal(`💎 Financial Tracker`, [
         {
             text: `💳 Account: ${account_balance}`,
             value: `accounts`,
@@ -12,7 +12,7 @@ export async function viewDashboard(account_balance: number, transactions_total:
         },
         {
             text: ` `,
-            value: ` `,
+            value: ``,
         },
         {
             text: `🛒 New Expense`,
@@ -24,7 +24,7 @@ export async function viewDashboard(account_balance: number, transactions_total:
         },
         {
             text: ` `,
-            value: ` `,
+            value: ``,
         },
         {
             text: `👥 People`,

@@ -1,22 +1,30 @@
+import { ModelAccount } from "src/model/Account";
+import { ModelConfiguration } from "src/model/Configuration";
+import { viewAccounts } from "src/view/viewAccounts";
 import { viewDashboard } from "src/view/viewDashboard";
 
 export class Controller {
 
     static async main() {
-        let uistate = `dashboard`;
-
+        let state = `dashboard`;
         do {
-            switch (uistate) {
+            switch (state) {
                 case `dashboard`: {
-                    uistate = await viewDashboard(0, 0);
+                    state = await viewDashboard(
+                            0,
+                            0
+                    );
                     break;
                 }
                 case `accounts`: {
-                    uistate = await 
+                    state = await viewAccounts(
+                        ModelAccount.getList(),
+                        ModelConfiguration.getDefaultAccount()
+                    );
+                    break;
                 }
             }
-        } while (uistate != null);
-
+        } while (state != `exit`);
     }
-
+    
 }
