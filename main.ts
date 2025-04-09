@@ -1,9 +1,10 @@
 import initSqlJs from 'sql.js';
 import { App, Plugin } from 'obsidian';
 import { Model } from 'src/model/Model';
-import { createModal } from 'src/module/Modal';
+import { createSelectionModal } from 'src/module/SelectionModal';
 import { Controller } from 'src/module/Controller';
 import { ModelAccount } from 'src/model/Account';
+import { createTextModal } from 'src/module/TextModal';
 
 export default class FinancialTracker extends Plugin {
 
@@ -22,7 +23,10 @@ export default class FinancialTracker extends Plugin {
 		Model.setSqlite(new SQL.Database(Buffer.from(DB_FILE)));
 
 		this.addRibbonIcon('dollar-sign', 'Financial Tracker', async () => {
-			Controller.main();
+			console.log(await createTextModal("Test", [
+				{id: "campo1", name: "Test 1"},
+				{id: "campo2", name: "Test 1"}
+			]));
 		});
 
 	}

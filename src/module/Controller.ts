@@ -5,26 +5,26 @@ import { viewDashboard } from "src/view/viewDashboard";
 
 export class Controller {
 
-    static async main() {
+    static async openUi() {
         let state = `dashboard`;
         do {
             switch (state) {
                 case `dashboard`: {
-                    state = await viewDashboard(
-                            0,
-                            0
-                    );
+                    state = await viewDashboard({
+                        account_balance: 0,
+                        transactions_total: 0,
+                    });
                     break;
                 }
                 case `accounts`: {
-                    state = await viewAccounts(
-                        ModelAccount.getList(),
-                        ModelConfiguration.getDefaultAccount()
-                    );
+                    state = await viewAccounts({
+                        accounts: ModelAccount.getList(),
+                        default_account: ModelConfiguration.getDefaultAccount()
+                    });
                     break;
                 }
             }
         } while (state != `exit`);
     }
-    
+
 }

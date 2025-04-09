@@ -1,18 +1,18 @@
-import { createModal } from "src/module/Modal";
+import { createSelectionModal } from "src/module/SelectionModal";
 
-export async function viewDashboard(account_balance: number, transactions_total: number) {
-    return createModal(`💎 Financial Tracker`, [
+export async function viewDashboard(_: {account_balance: number, transactions_total: number}) {
+    return createSelectionModal(`💎 Financial Tracker`, [
         {
-            text: `💳 Account: ${account_balance}`,
+            text: `💳 Account: ${_.account_balance.toFixed(2)}€`,
             value: `accounts`,
         },
         {
-            text: `🧾 Transactions: ${transactions_total == 0 ? '0' : transactions_total.toFixed(2)}€`,
+            text: `🧾 Transactions: ${_.transactions_total >= 0 ? `+${_.transactions_total.toFixed(2)}` : `-${_.transactions_total.toFixed(2)}`}€`,
             value: `transactions`,
         },
         {
             text: ` `,
-            value: ``,
+            value: `dashboard`,
         },
         {
             text: `🛒 New Expense`,
@@ -24,7 +24,7 @@ export async function viewDashboard(account_balance: number, transactions_total:
         },
         {
             text: ` `,
-            value: ``,
+            value: `dashboard`,
         },
         {
             text: `👥 People`,
