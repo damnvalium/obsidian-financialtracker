@@ -1,7 +1,8 @@
 import FinancialTracker from "main";
 import { SuggestModal } from "obsidian";
+import { ControllerUiState } from "./ControllerUiState";
 
-class SelectionModal extends SuggestModal<{ text: string, value: any }> {
+class SelectionModal extends SuggestModal<{ text: string, value: ControllerUiState }> {
     private modalData: { text: string, value: any }[] = [];
 
     constructor(title: string, fields: { text: string, value: any }[]) {
@@ -32,7 +33,7 @@ class SelectionModal extends SuggestModal<{ text: string, value: any }> {
  * @param entries The entries to display in the modal.
  * @returns A promise that resolves to the selected value.
  */
-export async function createSelectionModal(title: string, entries: {text: string, value: any}[]): Promise<any> {
+export async function createSelectionModal(title: string, entries: {text: string, value: ControllerUiState}[]): Promise<any> {
     return new Promise(async (resolve) => {
         const modal = new SelectionModal(title, entries);
         let selected = false;

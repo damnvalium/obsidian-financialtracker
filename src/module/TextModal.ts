@@ -45,7 +45,7 @@ class TextModal extends Modal {
 
 }
 
-export async function createTextModal(title: string, fields: { id: string, name: string }[]): Promise<{ [key: string]: string } | null> {
+export async function createTextModal(title: string, fields: { id: string, name: string }[]): Promise<{ [key: string]: string } | null | `exit`> {
     return new Promise(async (resolve) => {
         new TextModal(
             title, 
@@ -56,6 +56,6 @@ export async function createTextModal(title: string, fields: { id: string, name:
             () => {
                 resolve(null);
             }
-        );
+        ).onClose = () => { resolve(`exit`); };
     });
 }

@@ -9,7 +9,7 @@ export async function viewAccounts(_: {accounts: ModelAccount[], default_account
         })),
         {
             text: `➕ New account`,
-            value: `accounts_new`,
+            value: `new_account:accounts`,
         },
         {
             text: ` `,

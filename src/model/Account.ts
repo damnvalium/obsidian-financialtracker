@@ -14,6 +14,15 @@ export class ModelAccount extends Model {
         this.last_usage = last_usage;
     }
 
+    static create(name: string, balance: number = 0): ModelAccount {
+        const res = ModelAccount.sqlite.exec(`
+            INSERT INTO Account (name, balance, last_usage)
+            VALUES ("${name}", ${Math.trunc(balance * 100)}, ${Date.now()})
+            RETURNING id;
+        `);
+        return ModelAccount.getById(res[0].values[0][0] as number);
+    }
+
     static getById(id: number): ModelAccount {
         const res = ModelAccount.sqlite.exec(`
             SELECT * 

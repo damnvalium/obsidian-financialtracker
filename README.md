@@ -8,7 +8,7 @@ If you have any suggestions or feature ideas, please open an issue on the GitHub
 
 ## Features
 - Track and categorize your expenses
-- Track loans to and from friends
+- Track loans and split expenses with and from other people
 - Write balance variations in daily notes
 
 ## Future Improvements
