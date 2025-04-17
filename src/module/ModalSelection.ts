@@ -2,31 +2,36 @@ import FinancialTracker from "main";
 import { SuggestModal } from "obsidian";
 import { ControllerUiState } from "./ControllerUiState";
 
-class SelectionModal extends SuggestModal<{ text: string, value: ControllerUiState }> {
-    private modalData: { text: string, value: any }[] = [];
+export type SelectionModalData = {
+    text: string;
+    value: ControllerUiState;
+}
 
-    constructor(title: string, fields: { text: string, value: ControllerUiState }[]) {
+class SelectionModal extends SuggestModal<SelectionModalData> {
+    private modalData: SelectionModalData[] = [];
+
+    constructor(title: string, fields: SelectionModalData[]) {
         super(FinancialTracker.PLUGIN_APP);
         this.setPlaceholder(title);
         this.modalData = fields;
     }
 
-    getSuggestions(query: string): { text: string; value: ControllerUiState; }[] | Promise<{ text: string; value: ControllerUiState; }[]> {
+    getSuggestions(query: string): SelectionModalData[] | Promise<SelectionModalData[]> {
         // Filtering disabled
         return this.modalData;
     }
 
-    renderSuggestion(value: { text: string; value: ControllerUiState; }, el: HTMLElement): void {
+    renderSuggestion(value: SelectionModalData, el: HTMLElement): void {
         el.createEl('div', { text: value.text });
     }
 
-    onChooseSuggestion(item: { text: string; value: ControllerUiState; }, evt: MouseEvent | KeyboardEvent): void { }
+    onChooseSuggestion(item: SelectionModalData, evt: MouseEvent | KeyboardEvent): void { }
 
 }
 
 
 /**
- * Creates a modal with a list of entries and returns the selected value.
+ * Creates a modal with a list of entries.
  * @param title The title of the modal.
  * @param entries The entries to display in the modal.
  * @param onSelect The function to call when an entry is selected.
@@ -34,14 +39,14 @@ class SelectionModal extends SuggestModal<{ text: string, value: ControllerUiSta
  */
 export function createSelectionModal(
     title: string,
-    entries: { text: string, value: ControllerUiState }[],
-    onSelect: (item: any) => {},
-    onClose: () => {}
+    entries: SelectionModalData[],
+    onSelect: (item: ControllerUiState) => void,
+    onClose: () => void
 ): void {
 
     const modal = new SelectionModal(title, entries);
 
-    let modalChooseFunction = (item: { text: string, value: ControllerUiState }) => {
+    let modalChooseFunction = (item: SelectionModalData) => {
         modalCloseFunction = () => { };
         onSelect(item.value);
     }

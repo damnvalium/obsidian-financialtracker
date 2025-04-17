@@ -1,4 +1,4 @@
-import { createTextModal } from "src/module/TextModal";
+import { createTextModal } from "src/module/ModalText";
 
 export async function viewNewAccount() {
     return await createTextModal(`💳 New Account`, [
