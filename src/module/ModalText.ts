@@ -6,10 +6,8 @@ class TextModal extends Modal {
     private input: { [key: string]: string } = {};
 
     constructor(
-        title: string, 
-        fields: { id: string, name: string }[], 
-        onSubmit: (values: { [key: string]: string }) => void,
-        onCancel: () => void 
+        title: string,
+        fields: { key: string, name: string }[],
     ) {
         super(FinancialTracker.PLUGIN_APP);
         super.setTitle(title);
@@ -19,7 +17,7 @@ class TextModal extends Modal {
                 .setName(field.name)
                 .addText((text) => {
                     text.onChange((value) => {
-                        this.input[field.id] = value;
+                        this.input[field.key] = value;
                     });
                 });
         }
@@ -28,34 +26,57 @@ class TextModal extends Modal {
             .addButton((btn) => {
                 btn.setIcon('cross');
                 btn.onClick(() => {
-                    onCancel();
-                    this.close();
+                    this.onCancel();
                 });
             })
             .addButton((btn) => {
                 btn.setCta();
                 btn.setIcon('checkmark');
                 btn.onClick(() => {
-                    onSubmit(this.input);
-                    this.close();
+                    this.onSubmit(this.input);
                 });
             })
-        super.open();
     }
+
+    onSubmit: (values: { [key: string]: string }) => void;
+    onCancel: () => void;
 
 }
 
-export async function createTextModal(title: string, fields: { id: string, name: string }[]): Promise<{ [key: string]: string } | null | `exit`> {
-    return new Promise(async (resolve) => {
-        new TextModal(
-            title, 
-            fields,
-            (values) => {
-                resolve(values);
-            },
-            () => {
-                resolve(null);
-            }
-        ).onClose = () => { resolve(`exit`); };
-    });
+/**
+ * Creates a modal with a list of text fiels.
+ * @param title The title of the modal.
+ * @param fields Fields to display in the modal.
+ * @param onSubmit The function to call when the form is submitted
+ * @param onCancel The function to call when the form is cancelled
+ * @param onClose The function to call when the modal is closed (without submitting or cancelling)
+ */
+export function createTextModal(
+    title: string,
+    fields: { key: string, name: string }[],
+    onSubmit: (values: { [key: string]: string }) => void,
+    onCancel: () => void,
+    onClose: () => void
+): void {
+
+    const modal = new TextModal(title, fields);
+
+    modal.onSubmit = (values: { [key: string]: string }) => {
+        modal.onClose = () => { };
+        onSubmit(values);
+        modal.close();
+    };
+
+    modal.onCancel = () => {
+        modal.onClose = () => { };
+        onCancel();
+        modal.close();
+    };
+
+    modal.onClose = () => {
+        onClose();
+    };
+
+    modal.open();
+
 }

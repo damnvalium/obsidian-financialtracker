@@ -24,6 +24,22 @@ export default class FinancialTracker extends Plugin {
 		Model.setSqlite(new SQL.Database(Buffer.from(DB_FILE)));
 
 		this.addRibbonIcon('dollar-sign', 'Financial Tracker', async () => {
+			createTextModal(
+				"Test",
+				[
+					{ key: "name", name: "Name" },
+					{ key: "balance", name: "Balance" }
+				],
+				(values) => {
+					console.log(values);
+				},
+				() => {
+					console.log("cancelled");
+				},
+				() => {
+					console.log("closed");
+				}
+			);
 		});
 
 	}

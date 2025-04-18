@@ -46,17 +46,15 @@ export function createSelectionModal(
 
     const modal = new SelectionModal(title, entries);
 
-    let modalChooseFunction = (item: SelectionModalData) => {
-        modalCloseFunction = () => { };
+    modal.onChooseSuggestion = (item: SelectionModalData) => {
+        modal.onClose = () => { };
         onSelect(item.value);
     }
 
-    let modalCloseFunction = () => {
+    modal.onClose = () => {
         onClose();
     }
 
-    modal.onChooseSuggestion = modalChooseFunction;
-    modal.onClose = modalCloseFunction;
     modal.open();
 
 }
