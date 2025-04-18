@@ -36,6 +36,10 @@ class TextModal extends Modal {
                     this.onSubmit(this.input);
                 });
             })
+
+        this.scope.register([], 'Enter', () => {
+            this.onSubmit(this.input);
+        })
     }
 
     onSubmit: (values: { [key: string]: string }) => void;

@@ -1,22 +1,21 @@
+import { ModelAccount } from "src/model/Account";
 import { ControllerState } from "src/module/ControllerUiState";
 import { createTextModal } from "src/module/ModalText";
 
-export async function viewNewAccount(cb: {
+export async function viewEditAccountName(placeholder: {
+    account: ModelAccount
+}, cb: {
     submit: (fields: { [key: string]: string }) => ControllerState,
     cancel: () => ControllerState,
     close: () => ControllerState,
 }): Promise<ControllerState> {
     return new Promise((resolve) => {
-        createTextModal(`💳 New Account`,
+        createTextModal(`✏️ Renaming ${placeholder.account.name}...`,
             [
                 {
                     key: `name`,
-                    name: `Name`,
+                    name: `New account's name?`,
                 },
-                {
-                    key: `balance`,
-                    name: `Starting Balance`,
-                }
             ],
             (fields) => resolve(cb.submit(fields)),
             () => resolve(cb.cancel()),

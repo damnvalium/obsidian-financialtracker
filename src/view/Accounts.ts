@@ -1,11 +1,11 @@
 import { ModelAccount } from "src/model/Account";
-import { Action, ControllerUiState } from "src/module/ControllerUiState";
+import { ControllerAction, ControllerState } from "src/module/ControllerUiState";
 import { createSelectionModal, SelectionModalData } from "src/module/ModalSelection";
 
 export async function viewAccounts(placeholder: {
     accounts: ModelAccount[],
     default_account: number
-}): Promise<ControllerUiState> {
+}): Promise<ControllerState> {
     return new Promise((resolve) => {
         createSelectionModal(`💳 Accounts`,
             [
@@ -13,7 +13,7 @@ export async function viewAccounts(placeholder: {
                     {
                         text: `${account.id != placeholder.default_account ? "💳" : "⭐"} ${account.name}: ${account.balance}€`,
                         value: {
-                            action: Action.OPEN_ACCOUNT,
+                            action: ControllerAction.OPEN_ACCOUNT,
                             action_data: account.id
                         }
                     }
@@ -21,24 +21,24 @@ export async function viewAccounts(placeholder: {
                 {
                     text: `➕ New account`,
                     value: {
-                        action: Action.CREATE_ACCOUNT,
+                        action: ControllerAction.CREATE_ACCOUNT,
                     }
                 },
                 {
                     text: ` `,
                     value: {
-                        action: Action.OPEN_ACCOUNTS,
+                        action: ControllerAction.OPEN_ACCOUNTS,
                     }
                 },
                 {
                     text: `🔙 Back`,
                     value: {
-                        action: Action.OPEN_DASHBOARD,
+                        action: ControllerAction.OPEN_DASHBOARD,
                     }
                 }
             ],
             (item) => resolve(item),
-            () => resolve({ action: Action.CLOSE })
+            () => resolve({ action: ControllerAction.CLOSE })
         );
     })
 }

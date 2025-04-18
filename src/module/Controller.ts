@@ -4,16 +4,19 @@ import { viewNewAccount } from "src/view/NewAccount";
 import { viewAccounts } from "src/view/Accounts";
 import { viewDashboard } from "src/view/Dashboard";
 import { viewAccount } from "src/view/Account";
-import { ControllerUiState, Action } from "./ControllerUiState";
+import { ControllerState, ControllerAction } from "./ControllerUiState";
+import { zenParseFloat } from "./Utils";
+import { viewEditAccountName } from "src/view/EditAccountName";
+import { viewConfirm } from "src/view/Confirm";
 
 export class Controller {
 
     static async openUi() {
-        let state: ControllerUiState = { action: Action.OPEN_DASHBOARD };
+        let state: ControllerState = { action: ControllerAction.OPEN_DASHBOARD };
         do {
             switch (state.action) {
 
-                case Action.OPEN_DASHBOARD: {
+                case ControllerAction.OPEN_DASHBOARD: {
                     state = await viewDashboard({
                         default_account: ModelAccount.getById(ModelConfiguration.getDefaultAccount()),
                         transactions_total: 0,
@@ -21,7 +24,7 @@ export class Controller {
                     break;
                 }
 
-                case Action.OPEN_ACCOUNTS: {
+                case ControllerAction.OPEN_ACCOUNTS: {
                     state = await viewAccounts({
                         accounts: ModelAccount.getList(),
                         default_account: ModelConfiguration.getDefaultAccount()
@@ -29,48 +32,104 @@ export class Controller {
                     break;
                 }
 
-                case Action.OPEN_ACCOUNT: {
+                case ControllerAction.OPEN_ACCOUNT: {
                     state = await viewAccount({
                         default_account: ModelConfiguration.getDefaultAccount(),
                         account: ModelAccount.getById(state.action_data as number)
                     });
-                }
-
-                case Action.CREATE_ACCOUNT: {
-                    const input = await viewNewAccount();
-                    if (input == null) {
-                        state = `accounts`;
-                        break;
-                    }
-                    if (input == `exit`) {
-                        state = `exit`;
-                        break;
-                    }
-                    ModelAccount.create(
-                        input["name"],
-                        parseFloat(input["balance"])
-                    );
                     break;
                 }
 
-                case Action.EDIT_ACCOUNT_DEFAULT: {
-                    const account_id = parseInt(state.split(`:`)[1]);
-                    ModelConfiguration.setDefaultAccount(account_id);
-                    state = `account:${account_id}`;
+                case ControllerAction.CREATE_ACCOUNT: {
+                    state = await viewNewAccount({
+                        submit: (fields) => {
+                            const name = fields[`name`];
+                            const balance = zenParseFloat(fields[`balance`]);
+                            const account = ModelAccount.create(name, balance);
+                            if (state.redirect) return {
+                                action: state.redirect,
+                                action_data: state.redirect_data
+                            }
+                            else return {
+                                action: ControllerAction.OPEN_ACCOUNT,
+                                action_data: account.id
+                            }
+                        },
+                        cancel: () => {
+                            if (state.cancel) return {
+                                action: state.cancel,
+                                action_data: state.cancel_data
+                            }
+                            else return {
+                                action: ControllerAction.OPEN_ACCOUNTS
+                            }
+                        },
+                        close: () => ({ action: ControllerAction.CLOSE })
+                    });
                     break;
                 }
 
-                case Action.DELETE_ACCOUNT: {
-                    const account = ModelAccount.getById(parseInt(state.split(`:`)[1]));
-                    if (account.id == ModelConfiguration.getDefaultAccount())
-                        throw new Error(`Cannot delete default account`);
-                    account.delete();
-                    state = `accounts`;
+                case ControllerAction.EDIT_ACCOUNT_NAME: {
+                    state = await viewEditAccountName({
+                        account: ModelAccount.getById(state.action_data as number)
+                    }, {
+                        submit: (fields) => {
+                            const account = ModelAccount.getById(state.action_data as number);
+                            account.name = fields[`name`];
+                            account.save();
+                            return {
+                                action: ControllerAction.OPEN_ACCOUNT,
+                                action_data: state.action_data
+                            }
+                        },
+                        cancel: () => {
+                            return {
+                                action: ControllerAction.OPEN_ACCOUNT,
+                                action_data: state.action_data
+                            }
+                        },
+                        close: () => ({ action: ControllerAction.CLOSE })
+                    })
+                    break;
+                }
+
+                case ControllerAction.EDIT_ACCOUNT_DEFAULT: {
+                    ModelConfiguration.setDefaultAccount(state.action_data as number);
+                    state.action = ControllerAction.OPEN_ACCOUNT;
+                    break;
+                }
+
+                case ControllerAction.DELETE_ACCOUNT: {
+                    state = await viewConfirm({
+                        message: `Are you sure you want to delete this account? This action cannot be undone.`
+                    }, {
+                        confirm: () => {
+                            ModelAccount.getById(state.action_data as number).delete();
+                            if (state.redirect) return {
+                                action: state.redirect,
+                                action_data: state.redirect_data
+                            }
+                            else return {
+                                action: ControllerAction.OPEN_ACCOUNTS
+                            }
+                        },
+                        cancel: () => {
+                            if (state.cancel) return {
+                                action: state.cancel,
+                                action_data: state.cancel_data
+                            }
+                            else return {
+                                action: ControllerAction.OPEN_ACCOUNT,
+                                action_data: state.action_data
+                            }
+                        },
+                        close: () => ({ action: ControllerAction.CLOSE })
+                    });
                     break;
                 }
 
             }
-        } while (state.action != Action.CLOSE);
+        } while (state.action != ControllerAction.CLOSE);
     }
 
 }

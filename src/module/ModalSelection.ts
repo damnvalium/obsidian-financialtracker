@@ -1,10 +1,10 @@
 import FinancialTracker from "main";
 import { SuggestModal } from "obsidian";
-import { ControllerUiState } from "./ControllerUiState";
+import { ControllerState } from "./ControllerUiState";
 
 export type SelectionModalData = {
     text: string;
-    value: ControllerUiState;
+    value: ControllerState;
 }
 
 class SelectionModal extends SuggestModal<SelectionModalData> {
@@ -40,19 +40,22 @@ class SelectionModal extends SuggestModal<SelectionModalData> {
 export function createSelectionModal(
     title: string,
     entries: SelectionModalData[],
-    onSelect: (item: ControllerUiState) => void,
+    onSelect: (item: ControllerState) => void,
     onClose: () => void
 ): void {
 
     const modal = new SelectionModal(title, entries);
 
+    //! Workaround for close event called before choose event
+    let closeCallback: NodeJS.Timeout;
+
     modal.onChooseSuggestion = (item: SelectionModalData) => {
-        modal.onClose = () => { };
+        clearTimeout(closeCallback); //! -> Workaround 
         onSelect(item.value);
     }
 
     modal.onClose = () => {
-        onClose();
+        closeCallback = setTimeout(() => { onClose(); }, 10); //! -> Workaround 
     }
 
     modal.open();

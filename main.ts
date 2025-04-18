@@ -5,7 +5,8 @@ import { createSelectionModal } from 'src/module/ModalSelection';
 import { Controller } from 'src/module/Controller';
 import { ModelAccount } from 'src/model/Account';
 import { createTextModal } from 'src/module/ModalText';
-import { ControllerUiState } from 'src/module/ControllerUiState';
+import { ControllerAction, ControllerState } from 'src/module/ControllerUiState';
+import { zenParseFloat } from 'src/module/Utils';
 
 export default class FinancialTracker extends Plugin {
 
@@ -24,22 +25,7 @@ export default class FinancialTracker extends Plugin {
 		Model.setSqlite(new SQL.Database(Buffer.from(DB_FILE)));
 
 		this.addRibbonIcon('dollar-sign', 'Financial Tracker', async () => {
-			createTextModal(
-				"Test",
-				[
-					{ key: "name", name: "Name" },
-					{ key: "balance", name: "Balance" }
-				],
-				(values) => {
-					console.log(values);
-				},
-				() => {
-					console.log("cancelled");
-				},
-				() => {
-					console.log("closed");
-				}
-			);
+			Controller.openUi();
 		});
 
 	}
