@@ -11,7 +11,7 @@ export async function viewAccount(placeholder: {
             `${placeholder.default_account == placeholder.account.id ? "⭐" : "💳"} ${placeholder.account.name}`,
             [
                 {
-                    text: `◼️ Liquidity: ${placeholder.account.balance.toFixed(2)}`,
+                    text: `◼️ Liquidity: ${placeholder.account.balance.toFixed(2)}€`,
                     value: {
                         action: ControllerAction.OPEN_ACCOUNT,
                         action_data: placeholder.account.id
@@ -19,7 +19,7 @@ export async function viewAccount(placeholder: {
                 },
                 {
                     // TODO: Add net worth calculation
-                    text: `◼️ Net Worth: N/A`,
+                    text: `◼️ Net Worth: N/A€`,
                     value: {
                         action: ControllerAction.OPEN_ACCOUNT,
                         action_data: placeholder.account.id

@@ -44,13 +44,14 @@ export class ModelAccount extends Model {
             ORDER BY last_usage DESC
         `);
         const accounts: ModelAccount[] = [];
-        for (const account of res[0].values)
-            accounts.push(new ModelAccount(
-                account[0] as number,
-                account[1] as string,
-                account[2] as number,
-                account[3] as number,
-            ));
+        if (res[0])
+            for (const account of res[0].values)
+                accounts.push(new ModelAccount(
+                    account[0] as number,
+                    account[1] as string,
+                    account[2] as number,
+                    account[3] as number,
+                ));
         return accounts;
     }
 

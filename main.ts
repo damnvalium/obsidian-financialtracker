@@ -6,7 +6,7 @@ import { Controller } from 'src/module/Controller';
 import { ModelAccount } from 'src/model/Account';
 import { createTextModal } from 'src/module/ModalText';
 import { ControllerAction, ControllerState } from 'src/module/ControllerUiState';
-import { zenParseFloat } from 'src/module/Utils';
+import { zenParseMoney } from 'src/module/Utils';
 
 export default class FinancialTracker extends Plugin {
 
